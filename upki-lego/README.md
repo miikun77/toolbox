@@ -2,6 +2,9 @@
 
 NII UPKI電子証明書発行サービスの ACME 対応証明書を、lego（Docker）で取得し、systemd.timer で自動更新するセットアップスクリプト。
 
+記事はこちらをご覧ください。
+[[ACME対応] UPKIサーバー証明書の自動更新](https://zenn.dev/omu_tryangle/articles/7265b89dafede6)
+
 ## 前提
 
 - Docker・Nginx がインストール済み
