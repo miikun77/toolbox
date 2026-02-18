@@ -1,9 +1,11 @@
 # upki-lego
 
 NII UPKI電子証明書発行サービスの ACME 対応証明書を、lego（Docker）で取得し、systemd.timer で自動更新するセットアップスクリプト。
+
 ## 前提
 
 - Docker・Nginx がインストール済み
+- Nginxはconf.d以下にドメインごとの設定ファイルを置く構成で、HTTP-01チャレンジの受け口を作れること
 - UPKIのEABクレデンシャル（KIDとHMAC）が発行済み
 
 ## 使い方

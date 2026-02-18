@@ -3,6 +3,8 @@
 
 set -euo pipefail
 
+NGINX_BIN=$(command -v nginx || echo /usr/sbin/nginx)
+
 SERVICE_FILE="/etc/systemd/system/lego-renew.service"
 TIMER_FILE="/etc/systemd/system/lego-renew.timer"
 WEBROOT="/var/www/acme"
@@ -46,6 +48,7 @@ echo ""
 # ============================================================
 echo "==> [1/5] ディレクトリの準備"
 sudo mkdir -p "${WEBROOT}" "${LEGO_PATH}"
+sudo chmod 755 "${WEBROOT}"
 sudo chmod 700 /etc/lego
 
 # ============================================================
@@ -72,7 +75,7 @@ server {
     }
 }
 EOF
-  sudo nginx -t && sudo systemctl reload nginx
+  sudo "${NGINX_BIN}" -t && sudo systemctl reload nginx
 fi
 
 # ============================================================
@@ -125,7 +128,7 @@ server {
     }
 }
 EOF
-  sudo nginx -t && sudo systemctl reload nginx
+  sudo "${NGINX_BIN}" -t && sudo systemctl reload nginx
 fi
 
 # ============================================================
@@ -156,7 +159,7 @@ ExecStart=/usr/bin/docker run --rm \\
   --domains ${DOMAIN} \\
   --http --http.webroot ${WEBROOT} \\
   renew --days 30
-ExecStartPost=/usr/sbin/nginx -t
+ExecStartPost=${NGINX_BIN} -t
 ExecStartPost=/bin/systemctl reload nginx
 EOF
 
@@ -207,7 +210,7 @@ EXECBLOCK
         done = 1
       }
       { print }
-    ' > "${TMPSERVICE}"
+    ' | sudo tee "${TMPSERVICE}" > /dev/null
 
     sudo cp "${TMPSERVICE}" "${SERVICE_FILE}"
     rm -f "${TMPBLOCK}" "${TMPSERVICE}"
